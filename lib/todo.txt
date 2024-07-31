@@ -1,0 +1,35 @@
+assignment submission system
+splash 
+
+onboard
+    admin
+        login/create account
+        create profile 
+        forgetpassword
+        mainpage
+            tab
+                - assignment creations / created assignment 
+                    - assignment title
+                    - description
+                    - add file
+                    - 100 point
+                // with due date
+            - submitted assignment \ / grades / list of students
+            - people 
+                - teacher list and student list
+
+  
+
+
+    user 
+        login/create account
+        create profile
+        mainpage
+            - home 
+                - get avaliable assignment
+                    - view asignment 
+            - submitted page/graded  or not 
+            - people 
+                - teacher 
+                - classmates 
+
