@@ -26,7 +26,7 @@ class SubmitAssignment extends StatelessWidget {
       body: Column(children: [
         Expanded(
           child: ListView(
-            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             children: [
               Text(
                 'Title',
@@ -36,7 +36,7 @@ class SubmitAssignment extends StatelessWidget {
                 getData?['title'],
                 style: size16,
               ),
-              Divider(),
+              const Divider(),
               Text(
                 'Due date',
                 style: size16,
@@ -45,7 +45,7 @@ class SubmitAssignment extends StatelessWidget {
                 getData?['due date'],
                 style: size16,
               ),
-              Divider(),
+              const Divider(),
               Text(
                 'Grade point',
                 style: size16,
@@ -54,46 +54,46 @@ class SubmitAssignment extends StatelessWidget {
                 getData?['grade'],
                 style: size16,
               ),
-              Divider(),
+              const Divider(),
               Text(
                 'Submission type',
                 style: size16,
               ),
               Text(
-                'Text Entry, File Upload',
+                'Text Entry',
                 style: size16,
               ),
 
-              Divider(),
+              const Divider(),
               Text(
                 'Created by',
                 style: size16,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               Text(
                 getData?['fullname'],
                 style: size16,
               ),
-              Divider(),
+              const Divider(),
               Text(
                 'Created at',
                 style: size16,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               Text(
                 '${getData?['created'].toDate().toString()}',
                 style: size16,
               ),
-              Divider(),
+              const Divider(),
               Text(
                 'Descriptions',
                 style: size16,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               Text(
@@ -101,7 +101,7 @@ class SubmitAssignment extends StatelessWidget {
                 style: size16,
               ),
               //atachmentifselected
-              SizedBox(
+              const SizedBox(
                 height: 70,
               )
             ],

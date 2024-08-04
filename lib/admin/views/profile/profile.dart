@@ -123,7 +123,9 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
                       trailing: Icons.arrow_back_ios_new_outlined,
                     ),
                     ProfileBtn(
-                      onTap: () {},
+                      onTap: () {
+                        launchEmail();
+                      },
                       data: 'Feedback',
                       leading: Icons.person_2_outlined,
                       trailing: Icons.arrow_back_ios_new_outlined,

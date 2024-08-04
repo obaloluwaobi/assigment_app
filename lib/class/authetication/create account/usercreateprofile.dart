@@ -89,6 +89,11 @@ class _UserCreateProfileState extends State<UserCreateProfile> {
         title: const Text(
           'Create Student Profile',
         ),
+        leading: IconButton(
+            onPressed: () async {
+              await FirebaseAuth.instance.signOut();
+            },
+            icon: Icon(Icons.arrow_back_ios)),
         centerTitle: true,
       ),
       backgroundColor: background,

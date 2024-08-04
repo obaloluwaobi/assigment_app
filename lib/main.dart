@@ -4,10 +4,16 @@ import 'package:assigment_app/intro/onboard.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+bool isShow = true;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  final pref = await SharedPreferences.getInstance();
+  isShow = pref.getBool('ON_BOARDING') ?? true;
+  
+
   runApp(const MyApp());
 }
 
@@ -22,7 +28,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
       ),
-      home: const OnboardPage(),
+      home: isShow ? const OnboardPage() : const MainPage(),
     );
   }
 }

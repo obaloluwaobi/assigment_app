@@ -1,6 +1,3 @@
-import 'dart:io';
-import 'dart:math';
-
 import 'package:assigment_app/constants/constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -8,20 +5,21 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
-class CreateAssignment extends StatefulWidget {
-  const CreateAssignment({super.key});
+class EditAssignment extends StatefulWidget {
+  const EditAssignment({super.key, required this.getData, required this.id});
+  final QueryDocumentSnapshot<Map<String, dynamic>>? getData;
+  final String? id;
 
   @override
-  State<CreateAssignment> createState() => _CreateAssignmentState();
+  State<EditAssignment> createState() => _EditAssignmentState();
 }
 
-class _CreateAssignmentState extends State<CreateAssignment> {
-  // String duedate = '';
-  final _user = FirebaseAuth.instance.currentUser!;
+class _EditAssignmentState extends State<EditAssignment> {
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   TextEditingController dateController = TextEditingController();
   TextEditingController gradeController = TextEditingController();
+  final _user = FirebaseAuth.instance.currentUser!;
   Future assign(String name) async {
     try {
       showDialog(
@@ -33,15 +31,20 @@ class _CreateAssignmentState extends State<CreateAssignment> {
           descriptionController.text.isNotEmpty &&
           dateController.text.isNotEmpty &&
           gradeController.text.isNotEmpty) {
-        await FirebaseFirestore.instance.collection('assignments').add({
+        await FirebaseFirestore.instance
+            .collection('assignments')
+            .doc(widget.id)
+            .update({
           'title': titleController.text.trim(),
           'descriptions': descriptionController.text.trim(),
           'due date': dateController.text.trim(),
           'grade': gradeController.text.trim(),
-          'id': _user.uid.toString(),
           'created': FieldValue.serverTimestamp(),
           'fullname': name.trim(),
         });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Edit successfully')),
+        );
       }
       Navigator.pop(context);
     } on FirebaseException catch (e) {
@@ -78,21 +81,11 @@ class _CreateAssignmentState extends State<CreateAssignment> {
   }
 
   @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-    titleController.dispose();
-    descriptionController.dispose();
-    dateController.dispose();
-    gradeController.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: background,
-        title: const Text('Create Assignment'),
+        title: const Text('Edit Assignment'),
         centerTitle: true,
       ),
       backgroundColor: background2,
@@ -227,25 +220,6 @@ class _CreateAssignmentState extends State<CreateAssignment> {
                       ),
                     ],
                   ),
-                  // const SizedBox(
-                  //   height: 20,
-                  // ),
-                  // Container(
-                  //   //    margin: EdgeInsets.symmetric(vertical: 10),
-                  //   decoration: BoxDecoration(
-                  //       border: Border.all(color: dark),
-                  //       borderRadius: BorderRadius.circular(12)),
-                  //   child: ListTile(
-                  //     onTap: () {},
-                  //     leading: const Icon(Icons.attach_file_outlined),
-                  //     title: Text(
-                  //       'Add an attachment',
-                  //       style: size16,
-                  //     ),
-                  //   ),
-                  // ),
-                  //file
-
                   const SizedBox(
                     height: 30,
                   ),
@@ -263,7 +237,7 @@ class _CreateAssignmentState extends State<CreateAssignment> {
                                 }
                               : null,
                           child: Text(
-                            'Assign',
+                            'Update',
                             style: check
                                 ? size16w
                                 : GoogleFonts.poppins(

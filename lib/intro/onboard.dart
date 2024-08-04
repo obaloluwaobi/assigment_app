@@ -4,6 +4,7 @@ import 'package:assigment_app/class/auth/mainpage.dart';
 import 'package:assigment_app/class/authetication/login/userlogin.dart';
 import 'package:assigment_app/constants/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class OnboardPage extends StatelessWidget {
   const OnboardPage({super.key});
@@ -41,7 +42,9 @@ class OnboardPage extends StatelessWidget {
               height: 50,
             ),
             Btn(
-              onTap: () {
+              onTap: () async {
+                final pref = await SharedPreferences.getInstance();
+                await pref.setBool('ON_BOARDING', false);
                 Navigator.pushReplacement(context,
                     MaterialPageRoute(builder: (context) => const MainPage()));
               },
@@ -54,7 +57,9 @@ class OnboardPage extends StatelessWidget {
               height: 20,
             ),
             Btn(
-              onTap: () {
+              onTap: () async {
+                final pref = await SharedPreferences.getInstance();
+                await pref.setBool('ON_BOARDING', false);
                 Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(

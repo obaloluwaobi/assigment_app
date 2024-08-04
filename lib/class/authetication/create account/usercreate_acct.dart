@@ -2,6 +2,8 @@ import 'package:assigment_app/class/authetication/create%20account/usercreatepro
 import 'package:assigment_app/constants/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class UsercreateAcct extends StatefulWidget {
   final VoidCallback showLogin;
@@ -20,6 +22,20 @@ class _UsercreateAcctState extends State<UsercreateAcct> {
   TextEditingController passwordController = TextEditingController();
   Future createAccount() async {
     try {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              content: Container(
+                  height: 100,
+                  child: Center(
+                    child: LoadingAnimationWidget.hexagonDots(
+                      size: 50,
+                      color: Colors.black,
+                    ),
+                  )),
+            );
+          });
       if (emailController.text.isNotEmpty &&
           passwordController.text.isNotEmpty &&
           confirmpasswordController.text.isNotEmpty) {
@@ -34,9 +50,58 @@ class _UsercreateAcctState extends State<UsercreateAcct> {
       //         content: CircularProgressIndicator(),
       //       );
       //     });
-      Navigator.pop(context);
+      Navigator.of(context).pop();
     } on FirebaseAuthException catch (e) {
       print(e.toString());
+      if (e.code == "email-already-in-use") {
+        Navigator.pop(context);
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                content: Text(
+                    'The email already exists try logging in with this email.',
+                    style: GoogleFonts.dmSans(fontSize: 16)),
+              );
+            });
+        print(e.message);
+      }
+      if (e.code == "invalid-email") {
+        Navigator.pop(context);
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                content: Text('This email address does not exist.',
+                    style: GoogleFonts.dmSans(fontSize: 16)),
+              );
+            });
+        print(e.message);
+      }
+      if (e.code == "operation-not-allowed") {
+        Navigator.pop(context);
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                content: Text('this operation is not allowed',
+                    style: GoogleFonts.dmSans(fontSize: 16)),
+              );
+            });
+        print(e.message);
+      }
+      if (e.code == "weak-password") {
+        Navigator.pop(context);
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                content: Text('Weak Password!',
+                    style: GoogleFonts.dmSans(fontSize: 16)),
+              );
+            });
+        print(e.message);
+      }
     }
   }
 

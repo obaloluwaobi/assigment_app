@@ -1,8 +1,11 @@
 import 'package:assigment_app/admin/authetication/forgetpassword/password.dart';
 import 'package:assigment_app/class/authetication/create%20account/usercreate_acct.dart';
 import 'package:assigment_app/constants/constants.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class UsersLogin extends StatefulWidget {
   final VoidCallback showResigter;
@@ -21,12 +24,93 @@ class _UsersLoginState extends State<UsersLogin> {
     try {
       if (emailController.text.isNotEmpty &&
           passwordController.text.isNotEmpty) {
-        await FirebaseAuth.instance.signInWithEmailAndPassword(
-            email: emailController.text.trim(),
-            password: passwordController.text.trim());
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                content: Container(
+                    height: 100,
+                    child: Center(
+                      child: LoadingAnimationWidget.hexagonDots(
+                        size: 50,
+                        color: Colors.black,
+                      ),
+                    )),
+              );
+            });
+        UserCredential result = await FirebaseAuth.instance
+            .signInWithEmailAndPassword(
+                email: emailController.text.trim(),
+                password: passwordController.text.trim());
+
+        User? user = result.user;
+        if (user != null) {
+          // Check if user exists in 'admins' collection
+          DocumentSnapshot userData = await FirebaseFirestore.instance
+              .collection('users')
+              .doc(user.uid)
+              .get();
+
+          if (userData.exists) {
+            return "Success";
+          } else {
+            await FirebaseAuth.instance.signOut();
+
+            return "This is not a student account. Please use the correct login.";
+          }
+        }
+        Navigator.of(context).pop();
       }
     } on FirebaseAuthException catch (e) {
       print(e.toString());
+      if (e.code == "invalid-email") {
+        Navigator.pop(context);
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                content: Text('invalid-email',
+                    style: GoogleFonts.dmSans(fontSize: 16)),
+              );
+            });
+        print(e.message);
+      }
+      if (e.code == "user-disabled") {
+        Navigator.pop(context);
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                content: Text('user-disabled',
+                    style: GoogleFonts.dmSans(fontSize: 16)),
+              );
+            });
+        print(e.message);
+      }
+      if (e.code == "user-not-found") {
+        Navigator.pop(context);
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                content: Text('user-not-found',
+                    style: GoogleFonts.dmSans(fontSize: 16)),
+              );
+            });
+        print(e.message);
+      }
+      if (e.code == "invalid-credential") {
+        Navigator.pop(context);
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                content: Text('wrong-password',
+                    style: GoogleFonts.dmSans(fontSize: 16)),
+              );
+            });
+        print(e.message);
+      }
     }
   }
 

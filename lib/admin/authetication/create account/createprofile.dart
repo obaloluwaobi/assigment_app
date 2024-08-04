@@ -85,6 +85,11 @@ class _AdminCreateProfileState extends State<AdminCreateProfile> {
         title: const Text(
           'Create Admin Profile',
         ),
+        leading: IconButton(
+            onPressed: () async {
+              await FirebaseAuth.instance.signOut();
+            },
+            icon: Icon(Icons.arrow_back_ios)),
         centerTitle: true,
       ),
       backgroundColor: background,

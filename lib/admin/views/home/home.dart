@@ -1,5 +1,6 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:assigment_app/admin/views/home/createass.dart';
+import 'package:assigment_app/admin/views/home/edit.dart';
 import 'package:assigment_app/admin/views/home/viewass.dart';
 import 'package:assigment_app/constants/constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -111,8 +112,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => ViewAssignment(
-                                        getData: getData,
-                                      )));
+                                      getData: getData, id: id)));
                         },
                         // leading: const Icon(Icons.assignment_add),
                         title: Text(
@@ -132,7 +132,75 @@ class _AdminHomePageState extends State<AdminHomePage> {
                                     content: Container(
                                       height: 100,
                                       child: Column(
-                                        children: [],
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () {
+                                              Navigator.pop(context);
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          EditAssignment(
+                                                              getData: getData,
+                                                              id: id)));
+                                            },
+                                            child: Center(
+                                              child: Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Icon(Icons.note_add),
+                                                  SizedBox(
+                                                    width: 10,
+                                                  ),
+                                                  Text(
+                                                    'Edit    ',
+                                                    style: size20,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            height: 10,
+                                          ),
+                                          GestureDetector(
+                                            onTap: () {
+                                              Navigator.pop(context);
+                                              FirebaseFirestore.instance
+                                                  .collection('assignments')
+                                                  .doc(id)
+                                                  .delete();
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                SnackBar(
+                                                    content: Text('Deleted')),
+                                              );
+                                            },
+                                            child: Center(
+                                              child: Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Icon(Icons.delete),
+                                                  SizedBox(
+                                                    width: 10,
+                                                  ),
+                                                  Text(
+                                                    'Delete',
+                                                    style: size20,
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          )
+                                        ],
                                       ),
                                     ),
                                   );

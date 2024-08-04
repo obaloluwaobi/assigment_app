@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 //  Color(0xFFF5F5F5)0xFFf4f7fc
 Color background = Colors.grey.shade100;
@@ -135,3 +136,15 @@ TextStyle size14boldw = GoogleFonts.poppins(
   fontSize: 14,
   color: white,
 );
+Future<void> launchEmail() async {
+  // ios specification
+  final String subject = "Subject:";
+  final String stringText = "Same Message:";
+  String uri =
+      'mailto:hubstech0@gmail.com?subject=${Uri.encodeComponent(subject)}&body=${Uri.encodeComponent(stringText)}';
+  if (await canLaunch(uri)) {
+    await launch(uri);
+  } else {
+    print("No email client found");
+  }
+}
