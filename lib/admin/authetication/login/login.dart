@@ -1,4 +1,6 @@
 import 'package:assigment_app/admin/authetication/forgetpassword/password.dart';
+import 'package:assigment_app/class/auth/mainpage.dart';
+import 'package:assigment_app/class/authetication/login/userlogin.dart';
 import 'package:assigment_app/constants/constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -138,7 +140,22 @@ class _AdminLoginState extends State<AdminLogin> {
               shrinkWrap: true,
               padding: const EdgeInsets.symmetric(horizontal: 20),
               children: [
-                //logo
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => UserMainPage()));
+                  },
+                  child: Text(
+                    textAlign: TextAlign.right,
+                    'Student?',
+                    style: size20u,
+                  ),
+                ),
+                const SizedBox(
+                  height: 60,
+                ),
 
                 Text(
                   'Welcome Lecturer',

@@ -50,19 +50,21 @@ class _UserCreateProfileState extends State<UserCreateProfile> {
           matricController.text.isNotEmpty) {
         final User? _user = FirebaseAuth.instance.currentUser;
         final String _uid = _user!.uid;
-        if (photo == null) return;
-        final fileName = basename(photo!.path);
-        final destination = 'files/$fileName';
+        String? downloadURL;
+        if (photo != null) {
+          final fileName = basename(photo!.path);
+          final destination = 'files/$fileName';
 
-        UploadTask uploadTask = FirebaseStorage.instance
-            .ref(destination)
-            .child('profile$_uid/')
-            .putFile(photo!);
+          UploadTask uploadTask = FirebaseStorage.instance
+              .ref(destination)
+              .child('profile$_uid/')
+              .putFile(photo!);
 
-        TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() => null);
-        String downloadURL = await taskSnapshot.ref.getDownloadURL();
+          TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() => null);
+          String downloadURL = await taskSnapshot.ref.getDownloadURL();
+          print(downloadURL);
+        }
 
-        print(downloadURL);
         await FirebaseFirestore.instance
             .collection('users')
             .doc(FirebaseAuth.instance.currentUser!.uid)
@@ -73,7 +75,7 @@ class _UserCreateProfileState extends State<UserCreateProfile> {
           'dept': deptController.text.trim(),
           'faculty': facultyController.text.trim(),
           'institution': institutionController.text.trim(),
-          'url': downloadURL.toString(),
+          if (downloadURL != null) 'url': downloadURL.toString(),
         });
       }
     } on FirebaseException catch (e) {

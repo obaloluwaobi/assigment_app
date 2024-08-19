@@ -24,12 +24,18 @@ class ViewProfile extends StatelessWidget {
               .doc(FirebaseAuth.instance.currentUser!.uid)
               .snapshots(),
           builder: (context, snapshot) {
-            final pics = snapshot.data?.get('url') ?? 'name';
-            final fullname = snapshot.data?.get('fullname') ?? 'name';
-            final course = snapshot.data?.get('course') ?? 'name';
-            final dept = snapshot.data?.get('dept') ?? 'name';
-            final faculty = snapshot.data?.get('faculty') ?? 'name';
-            final institution = snapshot.data?.get('institution') ?? 'name';
+            Map<String, dynamic> userData =
+                snapshot.data!.data() as Map<String, dynamic>;
+            final fullname = userData['fullname'] ?? 'name';
+            String? pics = userData['url'] as String?;
+
+            final dept = userData['dept'] ?? 'name';
+            final faculty = userData['faculty'] ?? 'name';
+            final institution = userData['institution'] ?? 'name';
+            final phone = userData['phone'] ?? 'name';
+            final matric = userData['matric'] ?? 'name';
+
+            final course = userData['course'] ?? 'name';
 
             if (snapshot.hasData) {
               return ListView(
@@ -39,8 +45,19 @@ class ViewProfile extends StatelessWidget {
                     height: 150,
                     width: 150,
                     decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: DecorationImage(image: NetworkImage(pics))),
+                      shape: BoxShape.circle,
+                      image: pics != null
+                          ? DecorationImage(
+                              image: NetworkImage(pics), fit: BoxFit.cover)
+                          : null,
+                    ),
+                    child: pics == null
+                        ? Icon(
+                            Icons.person,
+                            size: 100,
+                            color: Colors.grey[900],
+                          )
+                        : null,
                   ),
                   const SizedBox(height: 20),
                   Text(

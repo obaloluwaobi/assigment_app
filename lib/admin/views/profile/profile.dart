@@ -39,8 +39,10 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
                 .snapshots(),
             builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
               if (snapshot.hasData) {
-                final fullname = snapshot.data?.get('fullname') ?? 'name';
-                final pics = snapshot.data?.get('url') ?? 'name';
+                Map<String, dynamic> userData =
+                    snapshot.data!.data() as Map<String, dynamic>;
+                final fullname = userData['fullname'] ?? 'name';
+                String? pics = userData['url'] as String?;
                 return ListView(
                   children: [
                     const SizedBox(
@@ -60,10 +62,20 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
                               width: 100,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                image:
-                                    DecorationImage(image: NetworkImage(pics)),
                                 color: white,
+                                image: pics != null
+                                    ? DecorationImage(
+                                        image: NetworkImage(pics),
+                                        fit: BoxFit.cover)
+                                    : null,
                               ),
+                              child: pics == null
+                                  ? Icon(
+                                      Icons.person,
+                                      size: 100,
+                                      color: Colors.grey[300],
+                                    )
+                                  : null,
                             ),
                             const SizedBox(
                               width: 10,
@@ -108,7 +120,7 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
                                 builder: (context) => const ListStudents()));
                       },
                       data: 'List of students',
-                      leading: Icons.person_2_outlined,
+                      leading: Icons.list,
                       trailing: Icons.arrow_back_ios_new_outlined,
                     ),
                     ProfileBtn(
@@ -119,7 +131,7 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
                                 builder: (context) => const AboutProject()));
                       },
                       data: 'About Project',
-                      leading: Icons.person_2_outlined,
+                      leading: Icons.info,
                       trailing: Icons.arrow_back_ios_new_outlined,
                     ),
                     ProfileBtn(
@@ -127,7 +139,7 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
                         launchEmail();
                       },
                       data: 'Feedback',
-                      leading: Icons.person_2_outlined,
+                      leading: Icons.feedback,
                       trailing: Icons.arrow_back_ios_new_outlined,
                     ),
                     ProfileBtn(
@@ -142,6 +154,42 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
                       leading: Icons.logout_outlined,
                       trailing: Icons.arrow_back_ios_new_outlined,
                     ),
+                    ProfileBtn(
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: const Text('Delete your Account?'),
+                              content: const Text(
+                                  '''If you select Delete we will delete your account on our server'''),
+                              actions: [
+                                TextButton(
+                                  child: const Text('Cancel'),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                                TextButton(
+                                  child: const Text(
+                                    'Delete',
+                                    style: TextStyle(
+                                      color: Colors.red,
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    deleteUserAccount();
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                      data: 'Delete account',
+                      leading: Icons.delete,
+                      trailing: Icons.arrow_back_ios_new_outlined,
+                    ),
                   ],
                 );
               }
@@ -152,6 +200,43 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
             }),
       ),
     );
+  }
+
+  Future<void> deleteUserAccount() async {
+    try {
+      await FirebaseAuth.instance.currentUser!.delete();
+    } on FirebaseAuthException catch (e) {
+      print(e);
+
+      if (e.code == "requires-recent-login") {
+        await _reauthenticateAndDelete();
+      } else {
+        // Handle other Firebase exceptions
+      }
+    } catch (e) {
+      print(e);
+
+      // Handle general exception
+    }
+  }
+
+  Future<void> _reauthenticateAndDelete() async {
+    try {
+      final providerData =
+          FirebaseAuth.instance.currentUser?.providerData.first;
+
+      if (AppleAuthProvider().providerId == providerData!.providerId) {
+        await FirebaseAuth.instance.currentUser!
+            .reauthenticateWithProvider(AppleAuthProvider());
+      } else if (GoogleAuthProvider().providerId == providerData.providerId) {
+        await FirebaseAuth.instance.currentUser!
+            .reauthenticateWithProvider(GoogleAuthProvider());
+      }
+
+      await FirebaseAuth.instance.currentUser?.delete();
+    } catch (e) {
+      // Handle exceptions
+    }
   }
 }
 

@@ -1,3 +1,4 @@
+import 'package:assigment_app/admin/auth/mainpage.dart';
 import 'package:assigment_app/admin/authetication/forgetpassword/password.dart';
 import 'package:assigment_app/class/authetication/create%20account/usercreate_acct.dart';
 import 'package:assigment_app/constants/constants.dart';
@@ -135,7 +136,20 @@ class _UsersLoginState extends State<UsersLogin> {
               shrinkWrap: true,
               padding: const EdgeInsets.symmetric(horizontal: 20),
               children: [
-                //logo
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (context) => MainPage()));
+                  },
+                  child: Text(
+                    textAlign: TextAlign.right,
+                    'Admin?',
+                    style: size20u,
+                  ),
+                ),
+                const SizedBox(
+                  height: 60,
+                ),
 
                 Text(
                   'Welcome Student',

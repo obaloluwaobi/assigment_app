@@ -48,6 +48,16 @@ TextStyle size20 = GoogleFonts.poppins(
   color: dark,
 );
 
+//size20normalunderline
+TextStyle size20u = GoogleFonts.poppins(
+  fontWeight: FontWeight.normal,
+  fontSize: 20,
+  color: dark,
+  decoration: TextDecoration.underline,
+  decorationColor: dark,
+  decorationThickness: 2,
+);
+
 //size20bold
 TextStyle size20bold = GoogleFonts.poppins(
   fontWeight: FontWeight.bold,
